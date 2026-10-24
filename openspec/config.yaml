@@ -1,0 +1,84 @@
+# openspec/config.yaml — plantilla GREENFIELD
+#
+# Para proyectos que nacen spec-driven: todo comportamiento entra por spec desde el inicio,
+# por lo que nunca existe comportamiento sin especificar. Este perfil no cambia a lo largo
+# de la vida del proyecto. La madurez (datos reconstruibles o a preservar, consumidores en
+# uso o no) la declara el bloque Proyecto, y las reglas de compatibilidad, destructividad,
+# migración y rollback se aplican en proporción a lo que ahí se declare.
+#
+# Precedencia: AGENTS.md > prompt del bloque autorizado > este fichero.
+# Las políticas transversales (warnings, auditoría de dependencias, registro de excepciones,
+# superficies de gobierno) y la vía oficial de verificación se definen en AGENTS.md y aquí
+# solo se referencian. Vocabulario («material», «focal») según AGENTS.md.
+#
+# Rellenar el bloque `Proyecto` pegando el bloque A de proyecto.txt. No añadir nada
+# específico del proyecto fuera de ese bloque.
+
+schema: spec-driven
+
+context: |
+  Idioma:
+  - Contenido explicativo de los artefactos en español de España, con la política de términos de AGENTS.md.
+  - En inglés: identificadores, ficheros, rutas, comandos, endpoints y los tokens que exige el schema y su validador: `SHALL`/`MUST`, `WHEN`/`THEN`/`AND`, `## Purpose`, `## ADDED|MODIFIED|REMOVED|RENAMED Requirements`, `### Requirement:`, `#### Scenario:`. Forma mixta admitida: «El sistema SHALL rechazar…».
+
+  Proyecto:
+  - Nombre: Foxes (slug `foxes-game`). Juego de navegador basado en una matriz 5x5; las reglas de juego se especifican change a change.
+  - Madurez: greenfield. Sin datos persistidos, sin consumidores, sin entornos a preservar y sin deploy. Mientras esto se mantenga, la ruptura de compatibilidad y la retirada de lógica sustituida son proporcionadas por defecto y no requieren migración ni rollback.
+  - Persistencia: ninguna. Introducir almacenamiento (p. ej. `localStorage`) exige un change que lo declare y actualice esta madurez.
+  - Stack: TypeScript en modo strict + Vite, sin framework de UI; Vitest para pruebas unitarias; Playwright (solo Chromium) para automatización de navegador; ESLint (flat config + typescript-eslint) y Prettier; npm; Node ^26.
+  - Arquitectura: la lógica de juego vive en módulos puros independientes del DOM y se prueba con Vitest; la capa de presentación es fina y se cubre con Playwright y QA humana.
+  - Vía oficial de verificación, auditoría y criterios de warning: según AGENTS.md §14.
+
+  Principios:
+  - Compatibilidad: no se conserva por inercia. Toda ruptura o destructividad se declara y se justifica como proporcionada a la madurez declarada en Proyecto.
+  - Lo sustituido (contratos, endpoints, lógica, shims, fallbacks, ramas) se retira en el mismo change salvo decisión explícita de compatibilidad.
+  - Los datos se presumen reconstruibles salvo que Proyecto o el change declaren lo contrario; no se aplican controles de producción por defecto.
+  - Configuración persistida y extensible antes que hardcoding funcional; los mecanismos actuales no son arquitectura terminada.
+  - Antes de nombrar o modificar una capability, revisar las specs permanentes existentes en `openspec/specs/`; capabilities en kebab-case, singular, por sustantivo de dominio, sin verbos ni nombres de change.
+  - Toda validación planificada o ejecutada desde OpenSpec hereda las políticas transversales de AGENTS.md. Ningún artefacto ni operación crea, propone ni sugiere excepciones, ni amplía checkpoints; la única excepción posible es una entrada vigente en el registro `exceptions.yaml` definido en AGENTS.md.
+
+rules:
+  specs:
+    - 'Describir comportamiento observable y normativo; sin detalles de implementación, operaciones del flujo de trabajo, tareas, Git ni decisiones internas que no alteren comportamiento observable.'
+    - 'Un requirement describe un comportamiento; cada rama relevante (positiva, negativa, error, rechazo) tiene su scenario verificable.'
+    - 'En cambios sensibles, cubrir autorización en servidor, alcance, responsabilidad sobre el recurso y, en proyectos multi-tenant, aislamiento entre tenants. Los guards de frontend no son frontera de seguridad.'
+    - 'Representar de forma explícita lo añadido, modificado, renombrado o retirado; no conservar requisitos legacy por inercia.'
+    - 'Toda delta que introduzca una capability nueva incluye un Purpose específico y descriptivo para la spec permanente.'
+  design:
+    - 'Documentar las decisiones técnicas materiales, las alternativas consideradas y sus trade-offs.'
+    - 'Definir responsabilidad entre servicios o módulos y almacenes, contratos, flujos de datos y límites de responsabilidad cuando el change los afecte.'
+    - 'Si se toca persistencia, separar estrategia de migración (entornos existentes) y de seed (entornos nuevos); identificar datos a preservar y datos reconstruibles.'
+    - 'Declarar breaking changes, destructividad y retirada de compatibilidad, justificando su proporcionalidad a la madurez declarada en Proyecto.'
+    - 'Analizar límites de confianza, autenticación, autorización, aislamiento y exposición de secretos cuando sean materiales.'
+    - 'Definir la retirada de endpoints, shims, fallbacks, ramas o lógica obsoleta que el change sustituya.'
+    - 'Definir la estrategia de pruebas por capas y el impacto en entorno de ejecución y QA proporcional al riesgo, sin imponer baterías globales por inercia.'
+    - 'Al introducir o ampliar configuración: responsabilidad, persistencia, valores por defecto, validación y exposición a APIs o UI.'
+    - 'Al modificar dependencias o herramientas: justificar la necesidad y el impacto en manifests, lockfiles, imágenes y validaciones.'
+    - 'Incluir rollback solo cuando sea material y proporcionado; no aplicar controles de producción por defecto a datos reconstruibles.'
+    - 'Mientras Proyecto declare datos reconstruibles y sin entornos a preservar, los cambios de schema se consolidan en la revisión baseline de la herramienta de migraciones en lugar de añadir revisiones incrementales: una sola revisión inicial, una sola head, y la seed alineada con ella. El design declara la consolidación, indica que los entornos existentes se recrean desde cero (sin ruta de migración incremental) y deja constancia de que esto deja de aplicar en cuanto Proyecto declare datos a preservar.'
+  tasks:
+    - 'Tareas ejecutables, acotadas y verificables, trazables a los requirements (capability y requirement) y a las decisiones del design.'
+    - 'Proponer la estructura de fases adecuada; no transcribir una lista de comprobación dictada en la petición.'
+    - 'Agrupar tareas cohesionadas cuando reduzca fricción; separar implementación, validación automatizada, entorno de ejecución y QA humana cuando reduzca riesgo.'
+    - 'Incluir las validaciones automatizadas aplicables por la vía oficial de AGENTS.md; reservar la QA manual para comportamientos que exijan confirmación humana.'
+    - 'Para cambios visibles en navegador, incluir un plan de automatización de navegador y QA humana proporcional al alcance, sin matriz fija. Si la QA depende de un frontend servido, incluir su reconstrucción tras cada fix antes de repetirla.'
+    - 'Si se toca persistencia, separar tareas de migración, seed y validación de datos cuando correspondan.'
+    - 'Incluir la retirada de código, contratos o lógica obsoleta que el change sustituya.'
+    - 'Cuando una validación física costosa cruce procesos, identidades, credenciales, estados persistentes o cleanup, trazar antes la satisfacibilidad end-to-end (productor, consumidor, identidad efectiva, orden y postcondición) sin sustituir la evidencia física.'
+    - 'Cambios a superficies de gobierno (AGENTS.md, openspec/config.yaml, exceptions.yaml): descomponer en análisis y propuesta exacta de solo lectura (agente), instalación (responsable técnico) y validación read-only posterior con la operación `check` de la vía oficial (agente). Nunca asignar al agente su modificación directa.'
+    - 'Sin tareas de Git, commits, ramas, push, checkpoints, archive, cierre del change ni fases meta sin trabajo verificable.'
+
+operations:
+  apply:
+    guidance:
+      - 'Ejecutar únicamente las tasks y bloques expresamente autorizados.'
+      - 'Antes de crear run IDs, stores, recursos persistentes o costes materiales, ejecutar el preflight bajo la misma frontera efectiva de permisos que usará la operación real; si falla, detenerse sin dejar estado parcial.'
+      - 'Si el bloque establece parada al primer fallo, el primer fallo material detiene las validaciones posteriores; el informe incluye un diagnóstico inicial acotado a la evidencia, sin más modificaciones. Retry, diagnóstico y nueva ejecución se distinguen según AGENTS.md.'
+      - 'Comenzar por la validación focal mínima útil y escalar según impacto material; un PASS focal no cierra una selección o gate más amplio ni se infiere impacto con una matriz universal.'
+      - 'Vía oficial, frescura de runtimes e imágenes, reutilización de evidencia previa y cleanup por owner: según AGENTS.md. No inventar un harness ni recurrir al deployment local como fallback.'
+      - 'Ante una contradicción material entre implementación y planificación, detener apply y remitir a openspec-update-change antes de implementar una intención diferente.'
+      - 'No marcar completada una task cuya validación obligatoria haya fallado, se haya omitido o esté bloqueada. La QA humana requiere confirmación humana explícita; la automatización de navegador no la sustituye.'
+      - 'Tras un fix frontend, reconstruir o recrear el frontend servido antes de repetir QA contra él.'
+      - 'No adelantar limpiezas de fases posteriores ni eliminar datos, recursos o evidencia aún necesarios; informar todo temporal conservado y su motivo.'
+      - 'Cambios a superficies de gobierno: el agente analiza y propone en read-only; el responsable técnico instala; el agente valida después lo instalado y ejecuta `check` si cambiaron referencias operativas. La propuesta no equivale a instalación.'
+      - 'Un warning no autorizado o un finding de auditoría aplicable bloquea la task según AGENTS.md. Un warning o un finding solo se supera con una entrada vigente y exacta en exceptions.yaml, según AGENTS.md; el resultado se informa como passed-with-exception:<id>. Apply nunca crea, edita, propone ni sugiere entradas.'

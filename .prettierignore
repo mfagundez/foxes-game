@@ -1,0 +1,11 @@
+dist
+coverage
+test-results
+playwright-report
+blob-report
+openspec/
+.claude/
+package-lock.json
+AGENTS.md
+CLAUDE.md
+exceptions.yaml

@@ -1,0 +1,24 @@
+# Registro de excepciones de gobierno · AGENTS.md §11
+# Solo el responsable técnico edita este fichero. El agente lo lee; nunca lo modifica.
+# Contiene únicamente excepciones vigentes: al caducar o dejar de ser necesaria, borrar la entrada.
+# El historial lo conserva Git. Este fichero debe estar versionado; nunca en .gitignore.
+#
+# Una entrada aplica solo si TODOS los campos coinciden exactamente con el bloqueo:
+#   id       EXC-YYYYMMDD-nn
+#   control  control que bloquea: npm-audit | uv-audit | browser-warning | <otro de la vía oficial>
+#   match    texto literal del advisory (GHSA/CVE) o del warning, tal como lo emite el runner
+#   scope    dónde aplica: paquete@versión, project Playwright o ruta; un solo objeto
+#   change   id del change OpenSpec en curso
+#   expires  YYYY-MM-DD, máximo 30 días desde su alta; una prórroga es una entrada nueva
+#   reason   por qué no hay fix y qué mitiga el riesgo mientras tanto (una línea)
+#
+# Vacío = no hay excepciones. Ejemplo (borrar):
+#   - id: EXC-20261019-01
+#     control: npm-audit
+#     match: GHSA-xxxx-xxxx-xxxx
+#     scope: some-package@1.2.3
+#     change: add-layers
+#     expires: 2026-11-18
+#     reason: "Sin fix upstream (issue #123); paquete solo en build, no en runtime."
+
+exceptions: []
