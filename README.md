@@ -4,6 +4,16 @@ Juego de navegador basado en una matriz 5x5. Las reglas de juego se especifican 
 
 Stack: TypeScript (strict) + Vite, Vitest, Playwright (Chromium), ESLint y Prettier. Node ^26 y npm.
 
+## Estado del juego
+
+Tablero N×N (hoy 5×5, puzzle fijo provisional) dividido en N bloques de color. Cada celda avanza con clic, toque, Enter o Espacio: vacía → césped 🌱 → zorro 🦊 → vacía.
+
+Reglas de colocación: no puede haber dos zorros en el mismo bloque, fila o columna, ni adyacentes (diagonal incluida). El tablero se evalúa en cada activación; si hay conflictos, las celdas con zorro implicadas se resaltan en rojo 1 s después de la última activación, y una nueva activación borra el resaltado al momento. El conflicto también se expone en el nombre accesible de la celda.
+
+Pendiente: victoria, timer de partida y generación de puzzles.
+
+La fuente normativa del comportamiento son las specs en `openspec/specs/` (`game-board`, `placement-rule`).
+
 ## Inicio rápido
 
 ```sh
