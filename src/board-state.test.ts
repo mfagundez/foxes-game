@@ -71,4 +71,22 @@ describe("cellLabel", () => {
       "fila 5, columna 5, bloque 5: zorro",
     );
   });
+
+  it("adds the conflict suffix only to a fox flagged in conflict", () => {
+    expect(cellLabel(4, 4, 5, "fox", true)).toBe(
+      "fila 5, columna 5, bloque 5: zorro, en conflicto",
+    );
+    expect(cellLabel(4, 4, 5, "fox", false)).toBe(
+      "fila 5, columna 5, bloque 5: zorro",
+    );
+  });
+
+  it("never adds the conflict suffix to empty or grass cells", () => {
+    expect(cellLabel(0, 0, 1, "empty", true)).toBe(
+      "fila 1, columna 1, bloque 1: vacía",
+    );
+    expect(cellLabel(0, 0, 1, "grass", true)).toBe(
+      "fila 1, columna 1, bloque 1: césped",
+    );
+  });
 });

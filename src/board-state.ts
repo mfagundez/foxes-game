@@ -50,12 +50,17 @@ export function advanceCell(
   );
 }
 
-/** Accessible name of a cell. `row` and `column` are 0-based; the name numbers them from 1. */
+/**
+ * Accessible name of a cell. `row` and `column` are 0-based; the name numbers them from 1.
+ * A fox flagged `inConflict` gets the suffix ", en conflicto".
+ */
 export function cellLabel(
   row: number,
   column: number,
   block: number,
   state: CellState,
+  inConflict = false,
 ): string {
-  return `fila ${row + 1}, columna ${column + 1}, bloque ${block}: ${CELL_STATE_LABEL[state]}`;
+  const suffix = state === "fox" && inConflict ? ", en conflicto" : "";
+  return `fila ${row + 1}, columna ${column + 1}, bloque ${block}: ${CELL_STATE_LABEL[state]}${suffix}`;
 }

@@ -6,6 +6,7 @@
   --palette-4: #cfd8dc;
   --cell-border: rgb(0 0 0 / 35%);
   --focus: #1a237e;
+  --conflict: #b71c1c;
 }
 
 body {
@@ -60,4 +61,13 @@ body {
 .cell:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: -3px;
+}
+
+.cell[data-conflict] {
+  border-color: var(--conflict);
+  box-shadow: inset 0 0 0 4px var(--conflict);
+}
+
+.cell[data-conflict]:focus-visible {
+  outline-offset: -7px;
 }
