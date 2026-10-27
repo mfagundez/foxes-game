@@ -1,0 +1,25 @@
+# Tasks
+
+## 1. Lógica pura: victoria, formato y cronómetro
+
+- [x] 1.1 Crear `src/victory.ts` con `isVictory(board, blocks)` (capability `game-session`, requirement «Condición de victoria»; design D1) y `src/victory.test.ts` con N zorros válidos (las 4 soluciones del puzzle fijo), N zorros con conflicto, N-1, N+1, césped/vacías presentes y dimensiones inconsistentes; verificar con `npm run test -- src/victory.test.ts`
+- [x] 1.2 Crear `src/elapsed-format.ts` con `formatElapsed(ms)` (requirement «Formato del cronómetro»; design D2) y `src/elapsed-format.test.ts` con 0, 999, 1000, 59 999, 60 000, 599 999 (09:59), 600 000 (10:00), 3 600 000 (60:00), 4 503 000 (75:03), 6 000 000 (100:00) y entradas negativas/no finitas; verificar con `npm run test -- src/elapsed-format.test.ts`
+- [x] 1.3 Crear `src/stopwatch.ts` con `Clock`, `createStopwatch(clock)`, `elapsedMs`, `stop`, `isStopped` (requirements «Cronómetro de partida» y «Fin de partida con cronómetro detenido»; design D3) y `src/stopwatch.test.ts` con reloj falso: avance, valor congelado tras `stop`, `stop` idempotente; verificar con `npm run test -- src/stopwatch.test.ts`
+
+## 2. Presentación: cronómetro, victoria, bloqueo y anuncio
+
+- [x] 2.1 En `src/main.ts` y `src/style.css`, montar el contenedor `.game` con el cronómetro (`role="timer"`, encima y alineado a la derecha, cifras tabulares), con arranque al mostrar el tablero y refresco por intervalo derivado del reloj `() => Date.now()` (requirements «Inicio de partida», «Cronómetro de partida», «Posición y aspecto del cronómetro»; design D3, D4, D8); verificar con `npm run build` sin warnings y comprobación en el e2e de la tarea 3.1
+- [x] 2.2 En `activate` de `src/main.ts`, añadir la guarda de partida ganada, la evaluación `isVictory` tras avanzar la celda y, al ganar, parar el cronómetro, cancelar el scheduler y limpiar resaltado, repintar el cronómetro y marcar las celdas con `aria-disabled="true"` sin alterar `aria-label` (requirements «Condición de victoria», «Fin de partida con cronómetro detenido», «Tablero bloqueado tras la victoria»; delta de `game-board`; design D5, D6); verificar con el e2e de la tarea 3.2
+- [x] 2.3 Añadir la capa visual «¡Victoria!» + tiempo (`aria-hidden`, `pointer-events: none`, panel centrado con fondo blanco al 92 % detrás del texto) y la región viva `role="status"` persistente rellenada al ganar (requirements «Mensaje de victoria», «Anuncio accesible de la victoria»; design D7); verificar con el e2e de la tarea 3.2
+- [x] 2.4 En `src/puzzle.ts`, sustituir el comentario «Provisional fixture: it may not be solvable…» por uno que indique que el puzzle provisional tiene varias soluciones válidas y que la unicidad la garantizará el futuro generador de puzzles; cambio solo de comentario, sin efecto en el comportamiento (design D9); verificar con `npm run lint` y `npm run format:check`
+
+## 3. Pruebas de navegador (Playwright, reloj controlado)
+
+- [x] 3.1 Crear `tests/e2e/session.spec.ts` (usando `./fixtures`) con: 00:00 al cargar; avance con `page.clock.runFor`; truncado (999 ms/1000 ms); formato 09:59, 10:00, 75:03 y 100:00; posición del cronómetro encima y alineado a la derecha del tablero en escritorio y a 320 px sin scroll horizontal; verificar con `npm run test:e2e -- tests/e2e/session.spec.ts`
+- [x] 3.2 En el mismo fichero, añadir: victoria al colocar el 5.º zorro con una disposición válida del puzzle fijo (con césped en otras celdas); sin victoria con 5 zorros en conflicto y con 4 zorros; cronómetro fijo tras la victoria; mensaje con tiempo idéntico al cronómetro; celdas sin respuesta a clic, toque, Enter y Espacio; `aria-disabled` y nombres accesibles inalterados; región viva con el anuncio; recarga que empieza en 00:00 con tablero vacío; verificar con `npm run test:e2e -- tests/e2e/session.spec.ts`
+- [x] 3.3 Revisar `tests/e2e/placement.spec.ts`, `board.spec.ts` y `smoke.spec.ts` por posibles victorias involuntarias o dependencias del nuevo DOM y ajustarlos si procede; verificar con `npm run test:e2e`
+
+## 4. Validación oficial y QA humana
+
+- [x] 4.1 Ejecutar `npm run check` y `npm run test:e2e` completos con las políticas de warnings de AGENTS.md; verificar que ambos pasan sin warnings ni excepciones
+- [x] 4.2 QA humana contra `npm run dev` (arrancado solo para esta tarea y detenido al terminar): aspecto y posición del cronómetro, legibilidad del mensaje sobre el tablero con los cinco colores, uso en móvil (320 px y toque) y en escritorio, y el foco de teclado tras la victoria; requiere confirmación humana explícita y, tras cualquier fix, confirmar la recarga y repetir 4.1 antes de repetir la QA

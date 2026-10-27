@@ -3,7 +3,8 @@ export interface PuzzleDefinition {
   readonly blocks: readonly (readonly number[])[];
 }
 
-// Provisional fixture: it may not be solvable. The puzzle generator will replace it.
+// Provisional fixture: it has several valid solutions. The future puzzle generator will
+// guarantee a unique one and replace it.
 const PROVISIONAL_PUZZLE: PuzzleDefinition = {
   blocks: [
     [1, 1, 1, 2, 2],

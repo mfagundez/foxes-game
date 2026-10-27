@@ -10,9 +10,11 @@ Tablero N×N (hoy 5×5, puzzle fijo provisional) dividido en N bloques de color.
 
 Reglas de colocación: no puede haber dos zorros en el mismo bloque, fila o columna, ni adyacentes (diagonal incluida). El tablero se evalúa en cada activación; si hay conflictos, las celdas con zorro implicadas se resaltan en rojo 1 s después de la última activación, y una nueva activación borra el resaltado al momento. El conflicto también se expone en el nombre accesible de la celda.
 
-Pendiente: victoria, timer de partida y generación de puzzles.
+Partida: al cargar la página arranca un cronómetro (mm:ss, encima del tablero a la derecha) que mide tiempo real, sin pausa. Se gana al tener N zorros sin ningún conflicto; cualquier disposición válida cuenta. Al ganar, el cronómetro se detiene, el tablero deja de responder y se superpone «¡Victoria!» con el tiempo empleado, que también se anuncia a lectores de pantalla. Para jugar otra vez se recarga la página.
 
-La fuente normativa del comportamiento son las specs en `openspec/specs/` (`game-board`, `placement-rule`).
+Pendiente: generación de puzzles. El puzzle provisional tiene varias soluciones válidas; la unicidad llegará con el generador.
+
+La fuente normativa del comportamiento son las specs en `openspec/specs/` (`game-board`, `placement-rule`, `game-session`).
 
 ## Inicio rápido
 
